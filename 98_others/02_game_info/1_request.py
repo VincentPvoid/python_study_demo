@@ -46,7 +46,9 @@ def get_tags_str(list, max_num = 5):
 # url = 'https://store.steampowered.com/app/2292030/'
 url = input('target steam url: ')
 
-response = requests.get(url=url)
+proxy = {'https': 'http://127.0.0.1:7890', 'http': 'http://127.0.0.1:7890'}
+
+response = requests.get(url=url, proxies=proxy)
 
 content = response.text
 # print(content)
@@ -82,9 +84,10 @@ publishers_a_list = soup.select('.dev_row .summary a')
 # //div[contains(@class, "popular_tags")]/a
 tags_list = soup.select('.popular_tags a')
 # document.querySelectorAll('.details_block .linkbar')[0]
-link = soup.select('.details_block .linkbar')[0].attrs['href']
+# link = soup.select('.details_block .linkbar')[0].attrs['href']
+link = soup.select('.details_block .linkbar')[0].attrs['href'].replace('%2F','/').replace('%3A', ':')
 # print(link)
-img_src = soup.select('.game_header_image_full')[0].attrs['src']
+img_src = soup.select('.game_header_image_full')[0].attrs['src'].replace('header','library_600x900')
 # print(img_src)
 
 developers = get_dev_str(developers_a_list)
