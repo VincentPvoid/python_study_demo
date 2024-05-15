@@ -1,0 +1,46 @@
+第一部分
+
+页面url
+https://tv.cctv.com/v/v1/VIDEDE9UYv92Y1VxQrg31tuu100506.html
+
+请求页面url，获取视频入口pid
+var video_guid= xxx
+
+根据pid获取视频信息；实际请求只需要pid参数
+https://vdn.apps.cntv.cn/api/getHttpVideoInfo.do?pid=xxx
+
+获取返回的json中的hls_url，即为视频入口url
+
+
+
+第二部分
+
+视频入口url
+https://newcntv.qcloudcdn.com/asp/hls/main/0303000a/3/default/92349d921f434c2d83c2d28d1cc2d024/main.m3u8?maxbr=2048
+
+请求入口，获取对应m3u8文件
+#EXTM3U
+#EXT-X-STREAM-INF:PROGRAM-ID=1, BANDWIDTH=460800, RESOLUTION=480x360
+/asp/hls/450/0303000a/3/default/92349d921f434c2d83c2d28d1cc2d024/450.m3u8
+#EXT-X-STREAM-INF:PROGRAM-ID=1, BANDWIDTH=870400, RESOLUTION=480x360
+/asp/hls/850/0303000a/3/default/92349d921f434c2d83c2d28d1cc2d024/850.m3u8
+
+取最后一行数据
+/asp/hls/850/0303000a/3/default/92349d921f434c2d83c2d28d1cc2d024/850.m3u8
+
+ts文件名列表url
+https://hls.cntv.myhwcdn.cn/asp/hls/850/0303000a/3/default/92349d921f434c2d83c2d28d1cc2d024/850.m3u8
+
+ts片段文件地址
+https://hls.cntv.myhwcdn.cn/asp/hls/850/0303000a/3/default/92349d921f434c2d83c2d28d1cc2d024/xxx.ts
+xxx = [1-423]
+
+
+
+
+1_dl_m3u8.py只实现了第二部分
+2_adv_dl.py实现了两部分
+
+但第一部分的通用性不强，不同页面的pid字段位置不同，获取方法不同
+第二部分是通用的
+
