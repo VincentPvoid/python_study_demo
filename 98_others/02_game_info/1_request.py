@@ -46,7 +46,7 @@ def get_tags_str(list, max_num = 5):
 # url = 'https://store.steampowered.com/app/2292030/'
 url = input('target steam url: ')
 
-proxy = {'https': 'http://127.0.0.1:xxxx', 'http': 'http://127.0.0.1:xxxx'}
+proxy = {'https': 'http://127.0.0.1:7890', 'http': 'http://127.0.0.1:7890'}
 
 response = requests.get(url=url, proxies=proxy)
 
@@ -133,9 +133,9 @@ text2 = f"""
 |游玩人数= 1
 |发行日期= {date}
 |售价= $
-|website= {link}
 |开发= {developers}
 |发行= {publishers}
+|website= {link}
 """
 
 # main_text = """
