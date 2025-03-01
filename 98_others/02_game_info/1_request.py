@@ -75,9 +75,17 @@ soup = BeautifulSoup(content, 'lxml')
 title = soup.select('#appHubAppName')[0].get_text()
 # 描述
 description = soup.select('.game_description_snippet')[0].get_text().strip()
-# 日期
+# 日期；如果未定获取到的字符串为To be announced 或 Coming soon
 date = soup.select('.date')[0].get_text()
-date = format_date(date)
+# print(date)
+# if(date.startswith("To") or date.startswith("Coming")):
+#   date = "未定"
+# else:
+#   date = format_date(date)
+try:
+  date = format_date(date)
+except:
+  date = "未定"
 # print(title, description, date)
 developers_a_list = soup.select('#developers_list a')
 publishers_a_list = soup.select('.dev_row .summary a')
@@ -119,8 +127,7 @@ for i in range(len(developers_a_list), len(publishers_a_list)):
 
 # print(publishers)
 str_null = ''
-text1 = """
-{{Infobox Game
+text1 = """{{Infobox Game
 |中文名= 
 |别名={
 }
@@ -136,7 +143,13 @@ text2 = f"""
 |开发= {developers}
 |发行= {publishers}
 |website= {link}
+|链接= {{
+[Steam|{url}]
 """
+
+# lastLine = f"""
+
+# """
 
 # main_text = """
 # {{Infobox Game
@@ -150,9 +163,12 @@ text2 = f"""
 # |游玩人数= 1
 # |发行日期= 2023-03-01
 # |售价= $7.99
-# |website= https://www.blockappend.net/
 # |开发= Rupour
 # |发行= Rupour
+# |website= https://www.blockappend.net/
+# |链接= {
+# [Steam|https://store.steampowered.com/app/xxxxxxx/]
+# }
 # }}
 # """
 
@@ -163,7 +179,9 @@ def save_txt(file_name, file_content):
   with open(file_name.replace('/', '_') + ".txt", "w", encoding='utf-8') as f:
     f.write(file_content)
 
-main_text = text1 + text2 + '}}\n' + description
+# main_text = text1 + text2 + '}}\n' + description
+# main_text = text1 + text2 + '}\n}}\n' + description
+main_text = text1 + text2 + '}\n}}'
 # save_txt('test', text1 + text2 + description)
 save_txt('test', main_text)
 
