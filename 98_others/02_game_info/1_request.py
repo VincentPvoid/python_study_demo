@@ -2,6 +2,7 @@ import requests
 # from lxml import etree
 from bs4 import BeautifulSoup
 from dateutil import parser
+import re
 
 def saveHtml(file_name, file_content):
  # 注意windows文件命名的禁用符，比如 /
@@ -68,8 +69,8 @@ content = response.text
 # publishers = tree.xpath('//div[@class="dev_row"]/div[contains(@class, "summary")]/a')
 # print(date)
 
-soup = BeautifulSoup(content, 'lxml')
 
+soup = BeautifulSoup(content, 'lxml')
 
 # 标题
 title = soup.select('#appHubAppName')[0].get_text()
@@ -95,13 +96,26 @@ tags_list = soup.select('.popular_tags a')
 # link = soup.select('.details_block .linkbar')[0].attrs['href']
 link = soup.select('.details_block .linkbar')[0].attrs['href'].replace('%2F','/').replace('%3A', ':')
 # print(link)
-img_src = soup.select('.game_header_image_full')[0].attrs['src'].replace('header','library_600x900')
+
+# 获取图片url
+# https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/xxxxxx/ed75864714bc842ce9980cdc7980e7151da3ff35/header.jpg?t=1742324437
+# reg_img_prefix = re.compile('https://shared.[^\.]+.steamstatic.com/store_item_assets/steam/apps/[0-9]+/')
+# img_src = soup.select('.game_header_image_full')[0].attrs['src'].replace('header','library_600x900')
+
+# 获取图片地址，并去除后面的时间参数 ?=xxxxxx 部分，方便后面正则过滤
+img_src = soup.select('.game_header_image_full')[0].attrs['src'].split('?')[0]
+# 去除header前面的随机名称部分 /ed75864714bc842ce9980cdc7980e7151da3ff35
+img_src = re.sub(r'/[^/]+/([^/]+\.[a-z]+)$', r'/\1', img_src)
+if(img_src):
+  # 替换header，获取竖图地址
+  img_src = img_src.replace('header','library_600x900')
 # print(img_src)
+dl_img(img_src)
 
 developers = get_dev_str(developers_a_list)
 publishers = ''
 tags = get_tags_str(tags_list)
-dl_img(img_src)
+
 
 # # 开发商字符串
 # for i in range(len(developers_a_list)):
