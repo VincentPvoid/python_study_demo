@@ -99,17 +99,20 @@ link = soup.select('.details_block .linkbar')[0].attrs['href'].replace('%2F','/'
 
 # 获取图片url
 # https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/xxxxxx/ed75864714bc842ce9980cdc7980e7151da3ff35/header.jpg?t=1742324437
+# https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/xxxxxx/header.jpg?t=1743192679
 # reg_img_prefix = re.compile('https://shared.[^\.]+.steamstatic.com/store_item_assets/steam/apps/[0-9]+/')
 # img_src = soup.select('.game_header_image_full')[0].attrs['src'].replace('header','library_600x900')
 
 # 获取图片地址，并去除后面的时间参数 ?=xxxxxx 部分，方便后面正则过滤
 img_src = soup.select('.game_header_image_full')[0].attrs['src'].split('?')[0]
-# 去除header前面的随机名称部分 /ed75864714bc842ce9980cdc7980e7151da3ff35
-img_src = re.sub(r'/[^/]+/([^/]+\.[a-z]+)$', r'/\1', img_src)
+
+# 去除数字到header之前的部分
+img_src = re.sub(r'/(\d+)/[^/]+(/header[^/]+)', r'/\1\2', img_src)
 if(img_src):
   # 替换header，获取竖图地址
-  img_src = img_src.replace('header','library_600x900')
-# print(img_src)
+  # img_src = img_src.replace('header','library_600x900')
+  img_src = re.sub(r'(/header)[^/.]*\.', r'/library_600x900.', img_src)
+print(img_src)
 dl_img(img_src)
 
 developers = get_dev_str(developers_a_list)
@@ -157,7 +160,7 @@ text2 = f"""
 |开发= {developers}
 |发行= {publishers}
 |website= {link}
-|链接= {{
+|链接={{
 [Steam|{url}]
 """
 
