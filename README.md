@@ -1,5 +1,5 @@
 # python_study_demo
-python学习dome  
+python学习demo  
 
 99 拉取自己lofter的数据  
 98-02 拉取steam信息  
@@ -11,3 +11,5 @@ python学习dome
 98-10 ffmpeg相关使用  
   |-- 1_ts_copy_to_mp4.py 把ts文件重新复制打包为mp4文件（不用重新压制）  
 98-11 dmzj获取订阅漫画列表  
+98-12 提取ass字幕文本（去除时间轴）  
+98-13 bgm获取wiki列表并过滤  
