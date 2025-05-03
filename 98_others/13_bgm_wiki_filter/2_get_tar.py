@@ -33,14 +33,18 @@ def get_info_arr(content):
 
 # 判断是否为需要的条目项（发行日期信息中是否包含 年 字段）
 def is_tar_item(info_arr):
-  for i in range(len(info_arr)):
-    item_key = info_arr[i]['key']
-    item_val = info_arr[i]['value']
-    if (item_key == '发行日期'):
-      if (item_val.find('年') != -1):
-        # list.append(url)
-        return True
-      return False
+  try:
+    for i in range(len(info_arr)):
+      item_key = info_arr[i]['key']
+      item_val = info_arr[i]['value']
+      if (item_key == '发行日期'):
+        if (item_val.find('年') != -1):
+          # list.append(url)
+          return True
+        return False
+  except Exception as e:
+    print(f"发生错误: {e}")
+    return False
   return False
 
 
