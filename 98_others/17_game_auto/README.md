@@ -345,7 +345,7 @@ ocr测试用
 **4_update.py**  
 初始需要检测n1，n2数字的版本
   
-**5_only_num1.py**
+**5_only_num1.py**  
 只检测n1的版本，但很多地方不完善
   
 **6_only_num1_update.py**  
