@@ -14,4 +14,5 @@ python学习demo
 98-12 提取ass字幕文本（去除时间轴）  
 98-13 bgm获取wiki列表并过滤  
 98-14 检查suruga-ya目标项目库存  
-98-16 转ebm文件为txt
+98-16 转ebm文件为txt  
+98-16 游戏自动脚本  

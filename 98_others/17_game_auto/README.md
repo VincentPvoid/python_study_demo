@@ -339,16 +339,16 @@ n1数字识别率一般，经常把2位数字识别为3位，不过这种可以�
 **example**  
 用于识别的示例图片，主要用于判断  
 
-**2_ocr_test.py**
+**2_ocr_test.py**  
 ocr测试用  
 
-**4_update.py**
+**4_update.py**  
 初始需要检测n1，n2数字的版本
   
 **5_only_num1.py**
 只检测n1的版本，但很多地方不完善
   
-**6_only_num1_update.py**
+**6_only_num1_update.py**  
 实际使用的版本，大部分情况下能用，但还存在问题和优化空间
 
 ### 优化方向
