@@ -94,7 +94,10 @@ publishers_a_list = soup.select('.dev_row .summary a')
 tags_list = soup.select('.popular_tags a')
 # document.querySelectorAll('.details_block .linkbar')[0]
 # link = soup.select('.details_block .linkbar')[0].attrs['href']
-link = soup.select('.details_block .linkbar')[0].attrs['href'].replace('%2F','/').replace('%3A', ':')
+try:
+  link = soup.select('.details_block .linkbar')[0].attrs['href'].replace('%2F','/').replace('%3A', ':')
+except:
+  link = ""
 # print(link)
 
 # 获取图片url
@@ -154,6 +157,7 @@ text1 = """{{Infobox Game
 
 text2 = f"""
 |游戏类型= {tags}
+|游戏引擎= 
 |游玩人数= 1
 |发行日期= {date}
 |售价= $
