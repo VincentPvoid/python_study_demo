@@ -1,6 +1,10 @@
-import requests
+# import requests
+from curl_cffi import CurlError, requests
 from bs4 import BeautifulSoup
+
 import time
+import random
+
 import concurrent.futures
 
 import os
@@ -13,8 +17,9 @@ def url_generator(url_list, interval):
   for url in url_list:
     yield url
     print(url)
-    # 设置请求间隔
-    time.sleep(interval)
+    # time.sleep(interval)
+    random_time = random.randint(1, 9)
+    time.sleep(random_time)
     
     
 
@@ -22,7 +27,7 @@ def url_generator(url_list, interval):
 def fetch_url(url):
   try:
     # 设置超时为15秒
-    response = requests.get(url, timeout=15)
+    response = requests.get(url, timeout=15, impersonate="chrome142")
     # 如果请求失败，抛出HTTPError异常
     response.raise_for_status()
     # 返回响应内容
@@ -34,7 +39,10 @@ def fetch_url(url):
       "res": response
     }
     return obj
-  except requests.RequestException as e:
+  # except requests.RequestException as e:
+  #   print(f"Error fetching {url}: {e}")
+  #   return None
+  except CurlError as e:
     print(f"Error fetching {url}: {e}")
     return None
   
