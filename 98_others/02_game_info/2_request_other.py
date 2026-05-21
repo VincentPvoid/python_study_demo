@@ -77,6 +77,8 @@ def handle_main_url(res):
   except:
     link = ""
   # print(link)
+  description = soup.select('.game_description_snippet')[0].get_text().strip()
+  print(description)
   
   
   # # 获取图片地址，并去除后面的时间参数 ?=xxxxxx 部分，方便后面正则过滤
@@ -128,11 +130,15 @@ def handle_steamcmd_url(res):
   
   # 需要的语种标题列表
   tar_list = [{'tchinese':'繁中'}, {'japanese':'日文'}, {'koreana':'韩文'}]
-  # 获取到的不同语种标题
-  title_obj = res_json['data'][app_id]['common']['name_localized']
-  # 获取当前有的标题字段
-  title_text_part = build_string_from_dict(title_obj, tar_list)
-  ch_title = title_obj.get('schinese', '')
+  try:
+    # 获取到的不同语种标题
+    title_obj = res_json['data'][app_id]['common']['name_localized']
+    # 获取当前有的标题字段
+    title_text_part = f'{{{build_string_from_dict(title_obj, tar_list)}}}'
+    ch_title = title_obj.get('schinese', '')
+  except:
+    title_text_part = ''
+    ch_title = ''
   
   platforms = ["PC"]
   # 将列表转为换行分隔的字符串
@@ -140,9 +146,7 @@ def handle_steamcmd_url(res):
     
   text1 = f"""{{{{Infobox Game
 |中文名= {ch_title}
-|别名= {{
-{title_text_part}
-}}
+|别名= {title_text_part}
 |平台= {{
 {platforms_str}
 }}
@@ -153,6 +157,9 @@ def handle_steamcmd_url(res):
 # 请求并处理响应
 def fetch_url(url):
   proxy = {'https': 'http://127.0.0.1:7890', 'http': 'http://127.0.0.1:7890'}
+  
+  # 在Cookie进行设置，可调整返回结果的语言
+  # headers = { "Cookie":  "Steam_Language=schinese"}
   try:
     response = requests.get(url=url, proxies=proxy)
     # 如果请求失败，抛出HTTPError异常
@@ -187,7 +194,6 @@ def fetch_all_urls(url_list):
     results = executor.map(fetch_url, url_generator(url_list, 0))  
   # print(results)
   return results
-
 
 
 # steam页面地址
