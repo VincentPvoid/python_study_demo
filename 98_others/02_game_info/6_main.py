@@ -115,7 +115,8 @@ class MainApp:
       # 获取到的不同语种标题
       title_obj = res_json['data'][app_id]['common']['name_localized']
       # 获取当前有的标题字段
-      title_text_part = f'{{{ut.build_string_from_dict(title_obj, tar_list)}}}'
+      # title_text_part = f'{{{ut.build_string_from_dict(title_obj, tar_list)}}}'
+      title_text_part = ut.build_string_from_dict(title_obj, tar_list)
       ch_title = title_obj.get('schinese', '')
     except:
       title_text_part = ''

@@ -47,8 +47,13 @@ def build_string_from_dict(obj, tar_list):
   for item in tar_list:
     for key, value in item.items():
       if key in obj and obj[key]:
-        text += f"[{value}|{obj[key]}]\n"
-  return text
+        # 前后都需要添加换行符；主要是bgm固定格式的问题，前面不换行可能会造成格式问题
+        text += f"\n[{value}|{obj[key]}]\n"
+  # 有需要的value时，用{}符号包裹
+  if text:
+    return f"{{{text}}}"
+  # 没有值时返回空文本
+  return ""
 
 
 # ori_text 需要插入内容的文本；
