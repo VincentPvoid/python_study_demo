@@ -284,7 +284,8 @@ class GameInfoForm(ttk.Frame):
     if not url:
       # messagebox.showwarning("提示", "请输入请求地址！")
       self.req_info.delete("1.0", tk.END)
-      self.req_info.insert(tk.END, "请输入请求地址", 'error')
+      # self.req_info.insert(tk.END, "请输入请求地址", 'error')
+      self.insert_info_colored("请输入请求地址", 'red')
       self.steam_url.focus()
       return
     
@@ -321,16 +322,28 @@ class GameInfoForm(ttk.Frame):
       self.on_submit_callback(data)
     
   
-  def append_echo(self, text):
+  def append_echo(self, text, color = '#d4d4d4'):
     """
     提供给外部调用的回显方法
     更新界面上的信息框
     """
     self.req_info.delete("1.0", tk.END)
     self.req_info.config(state='normal')
-    self.req_info.insert(tk.END, text + "\n")
+    # self.req_info.insert(tk.END, text + "\n")
+    self.insert_info_colored(text, color)
     self.req_info.see(tk.END)  # 自动滚动到最底部
     self.req_info.config(state='disabled')
+    # self.req_info.delete("1.0", tk.END)
+    # self.req_info.insert(tk.END, "正在发送请求...", 'info')
+  
+  
+  # 信息提示框需要显示不同颜色文字时使用该方法 
+  def insert_info_colored(self, content, color):
+    """向 ScrolledText 插入指定颜色的文字"""
+    # 直接用颜色值当 tag 名，避免重复定义
+    if color not in self.req_info.tag_names():
+      self.req_info.tag_configure(color, foreground=color)
+    self.req_info.insert("end", content + "\n", color)
     
   
   # 更新游戏信息区域

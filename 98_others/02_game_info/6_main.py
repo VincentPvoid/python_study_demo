@@ -179,6 +179,7 @@ class MainApp:
   
   # 从steam中获取游戏信息和图片（并发）
   def get_game_info(self, url):
+    # url = 'https://store.steampowered.com/app/2292030/'
     
     try:
       # 替换获取steamcmd请求地址
@@ -202,9 +203,11 @@ class MainApp:
           # print(item.get('url'), item.get('res').text)
           # steam 请求响应
           if item.get('url') == url:
+            # main_text += url_handler_map[item.get('url')](item.get('res'), url)
             text2 = url_handler_map[url](item.get('res'), url)
           else:
             # steamcmd 请求响应
+            # text1 = url_handler_map[steamcmd_url](item.get('res'), app_id)
             steamcmd_obj = url_handler_map[steamcmd_url](item.get('res'), app_id)
             text1 = steamcmd_obj['text']         
       
@@ -217,6 +220,7 @@ class MainApp:
       
       # 完成后信息显示到表单中
       self.form_view.after(0, self.form_view.update_game_text_aera, main_text)
+      # self.form_view.after(0, self.form_view.append_echo, '请求完成')
       self.form_view.append_echo('请求完成')
       self.form_view.update_game_title(steamcmd_obj['game_title'])
       # self.form_view.change_get_btn_status('normal')
@@ -251,7 +255,7 @@ class MainApp:
   
   
   # 信息提交完成后，上传封面图片
-  def upload_game_img(subject_url):
+  def upload_game_img(self, subject_url):
     upload_img_url = subject_url + '/upload_img'
     data = {
       'formhash': '1ed8bc3f',
@@ -264,8 +268,11 @@ class MainApp:
     response = requests.post(url=upload_img_url, proxies=DEFAULT_PROXY, headers=BGM_HEADERS, data=data, files=files)
     if (response.status_code == 200):
       print("图片上传完成")
+      self.form_view.after(0, self.form_view.append_echo, "图片上传成功")
     else:
       print("图片上传失败")
+      self.form_view.after(0, self.form_view.append_echo, "图片上传失败", "red")
+      
   
   
   
@@ -273,7 +280,7 @@ class MainApp:
   def submit_form(self, form_data):
     # url = 'https://bgm.tv/new_subject/4'
     # print(form_data)
-        
+    
     # 获取当前所选平台
     platforms_arr = form_data['platform']
     insert_text = f"""|平台= {{
@@ -295,17 +302,21 @@ class MainApp:
     print(data)
     # print(self.upload_game_img)
     
-    # 注意需要设定 allow_redirects=False ，才能获取到响应头中的Location
-    response = requests.post(url=FORM_BASE_URL, proxies=DEFAULT_PROXY, headers=BGM_HEADERS, data=data, allow_redirects=False)
-    new_url = 'https://bgm.tv/' + response.headers['Location']
-    # 上传图片
-    MainApp.upload_game_img(new_url)
-    print(response.headers)
-    
-    self.form_view.after(0, self.form_view.append_echo, "提交完成")
+    try:
+      # 注意需要设定 allow_redirects=False ，才能获取到响应头中的Location
+      response = requests.post(url=FORM_BASE_URL, proxies=DEFAULT_PROXY, headers=BGM_HEADERS, data=data, allow_redirects=False)
+      new_url = 'https://bgm.tv/' + response.headers['Location']
+      self.form_view.after(0, self.form_view.append_echo, "提交完成")
+      
+      # 上传图片
+      MainApp.upload_game_img(self, new_url)
+      print(response.headers)
+      
+      # self.form_view.change_submit_btn_status('normal')
+    except requests.RequestException as e:
+      print(f"Error submit: {e}")
+      self.form_view.after(0, self.form_view.append_echo, "提交失败", "red")
     self.form_view.change_submit_btn_status('normal')
-    
-    
     
   # 点击按钮，提交游戏信息
   def handle_submit_form(self, data):
