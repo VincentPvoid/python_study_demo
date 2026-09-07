@@ -1,7 +1,8 @@
 import concurrent.futures
 import time
 import requests
-import re
+import random
+
 
 
 def get_info_arr(content):
@@ -45,15 +46,35 @@ def read_url_list():
       url = line.strip().replace("https://bgm.tv/subject/",
                                  "https://api.bgm.tv/v0/subjects/")
       list.append(url)
-      
   print(f"new list num: {len(list)}")
   return list
 
 
+# 从列表中随机抽取条目；pick_num需要抽取的条目数
+def sortition_url_list(ori_list, pick_num):
+  list = []
+  index_num = -1
+  
+  # 可以抽取的最大下标
+  max_num = len(ori_list)
+
+  if max_num <= pick_num:
+    return ori_list
+  
+  for i in range(pick_num):
+    # 从0到max_num（不包括max_num）之间的随机数
+    index_num = random.randrange(0, max_num)
+    list.append(ori_list[index_num])
+    print(index_num)
+  return list
+
+
+
 # 处理请求列表，失败url需要重新请求；重试次数retry_left为3
 def handle_list(url_list, tar_list, retry_left = 3):
-  print(f"retry times: {3 - retry_left}")
   
+  print(f"retry times: {3 - retry_left}")
+
   if (len(url_list) == 0 or retry_left <= 0):
     return
   
@@ -72,8 +93,6 @@ def handle_list(url_list, tar_list, retry_left = 3):
       error_list.append(item['url'])
   
   handle_list(error_list, tar_list, retry_left - 1)
-  
-  
   
 
 # 请求并处理响应
@@ -126,29 +145,24 @@ def fetch_all_urls(url_list):
     # 使用executor.map来自动处理迭代和Future的获取  
     # results = executor.map(fetch_url, url_list) 
      
-    results = executor.map(fetch_url, url_generator(url_list, 0.5))  
+    results = executor.map(fetch_url, url_generator(url_list, 1))  
   # print(results)
   return results
 
-  # 处理结果
-  # for res in results:  
-  #   if res is not None:  
-  #     # print(f"Fetched content from a URL (truncated): {res}...")
-  #     print(res['res'].json())
-      
+
 
 # 把列表保存为文件
 def save_list_to_txt(list, file_name="tar_list"):
   if not list:
     return
   
-  with open(f'./{file_name}.txt', mode='w', encoding='utf-8') as fp:
+  # 追加模式
+  with open(f'./{file_name}.txt', mode='a', encoding='utf-8') as fp:
     text = ''
     for i in range(len(list)):
-      text += list[i].replace("https://api.bgm.tv/v0/subjects/",
-                              "https://bgm.tv/subject/") + '\n'
-    # text += f'\n共{i+1}条'
-    print(i+1)
+      text += '\n' + list[i].replace("https://api.bgm.tv/v0/subjects/",
+                              "https://bgm.tv/subject/")
+    print(len(list))
     fp.write(text)
 
 
@@ -160,21 +174,18 @@ def main():
   url_list = read_url_list()
   # print(url_list)
   
+  # 从原始列表中随机抽取30条数据进行检查
+  random_list = sortition_url_list(url_list, 30)
+  print(random_list)
+  
   tar_list = []
   
-  handle_list(url_list, tar_list, 3)
+  handle_list(random_list, tar_list, 3)
   
   print(tar_list)
   
   save_list_to_txt(tar_list)
   
-  # url = "https://api.bgm.tv/v0/subjects/544350"
-  # tar_list = []
-  # info_arr = get_info_arr(url)
-  # is_tar_item(info_arr, url, tar_list)
-
-  # pass
-
 
 if __name__ == '__main__':
   main()

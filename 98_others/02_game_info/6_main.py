@@ -179,7 +179,6 @@ class MainApp:
   
   # 从steam中获取游戏信息和图片（并发）
   def get_game_info(self, url):
-    # url = 'https://store.steampowered.com/app/2292030/'
     
     try:
       # 替换获取steamcmd请求地址
